@@ -1,0 +1,37 @@
+<head>
+	<title>Who's That Pokemon</title>
+</head>
+<body>
+	<div id="container">
+		<div class="content">
+			<h1>Who's That Pokemon</h1>
+		</div>
+		<div class="content">
+			{{> picture}}
+			{{> choices}}
+		</div>
+	</div>
+</body>
+
+<!-- POKEMON PICTURE -->
+<template name="picture">
+	<div id="pokemon-picture-container">
+		<img src="{{image_src}}" />
+	</div>
+</template>
+
+<!-- POKEMON CHOICES -->
+<template name="choices">
+	<div id="pokemon-choices-container">
+	{{#each choices}}
+	{{> choice}}
+	{{/each}}
+	</div>
+</template>
+
+<!-- POKEMON CHOICE -->
+<template name="choice">
+	<div class="pokemon-choice">
+	{{name}}
+	</div>
+</template>

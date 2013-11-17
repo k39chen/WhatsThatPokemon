@@ -1,0 +1,13 @@
+body {
+	font-family: "HelveticaNeueLt", "Helvetica Neue", Helvetica, Arial;
+	font-weight: 100;
+	font-size: 32px;
+}
+#container {
+	width: 100%;
+}
+.content {
+	max-width: 960px;
+	min-width: 480px; 
+	margin: 0 auto;
+}
