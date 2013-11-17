@@ -1,4 +1,4 @@
-Who's That Pokemon
+What's That Pokemon
 ===============
 
 A simple Pokemon matching game
