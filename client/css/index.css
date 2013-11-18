@@ -11,3 +11,53 @@ body {
 	min-width: 480px; 
 	margin: 0 auto;
 }
+
+.pokemon-choice {
+	user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	font-family: Helvetica;
+	font-size: 24px;
+	width: 320px;
+	text-align: center;
+	background: rgb(60,156,60);
+	padding: 12px;
+	margin-bottom: 12px;
+	border-radius: 15px;
+	cursor: pointer;
+	border-top: solid 1px rgb(200,200,200);
+	border-bottom: solid 1px rgb(150,150,150);
+	text-shadow: 1px 1px 1px rgb(150,150,150);
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+	color: rgb(255,255,255);
+}
+.pokemon-choice.hover {
+	background: rgb(111,195,111);
+}
+.pokemon-choice.active {
+	background: rgb(23,119,23);
+	border-bottom: solid 1px rgb(200,200,200);
+	border-top: solid 1px rgb(150,150,150);
+	text-shadow: -1px -1px 1px rgb(150,150,150);
+	box-shadow: -1px -1px 1px rgba(0,0,0,0.3);
+	color: rgb(250,250,250);
+}
+
+#pokemon-puzzle {
+	width: 256px;
+	height: 256px;
+	position: relative;
+}
+#pokemon-puzzle .image, #pokemon-puzzle .mask {
+	width: 256px;
+	height: 256px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+#pokemon-puzzle .mask {
+	filter: brightness(0%);
+}
