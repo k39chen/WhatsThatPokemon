@@ -45,10 +45,80 @@ Meteor.methods({
 				console.log(pokemon);
 			}
 		}
+	},
+	/**
+	 * Gets the url of the pokemon sprite.
+	 *
+	 * @method getPokemonSprite
+	 * @param pokemon {Object} The pokemon object
+	 * @return {String} The url of the pokemon sprite
+	 */
+	getPokemonSprite: function(pokemon) {
+		// we hotlink the images from serebii
+		var url = "http://www.serebii.net/art/th/";	// the base url for normal pokemon sprites
+		var url_mega = "http://www.serebii.net/xy/pokemon/"; // the base url for mega pokemon sprites
+
+		// the sprite url
+		var sprite = null;
+
+		if (pokemon && pokemon.id) {
+			if (isMega(pokemon)) {
+
+				// need to find the RIGHT id... by the pokemon name
+				var name = pokemon.name
+					.replace("-mega-x","")
+					.replace("-mega-y","")
+					.replace("-mega");
+				var basePokemon = Pokemon.findOne({name: new RegExp(name), id: {$lt: 10000}});
+
+				if (!basePokemon || !basePokemon.id) {
+					return null;
+				}
+				var id = basePokemon.id;
+
+				sprite = url_mega + bufferWithZeroes(id) + "-m";
+				if (isMegaX(pokemon)) {
+					sprite += "x";
+				} else if (isMegaY(pokemon)) {
+					sprite += "y";
+				}
+				sprite += ".png";
+
+				console.log(sprite);
+
+			} else {
+				sprite = url + pokemon.id + ".png";
+			}
+			// try to validate the sprite
+			try {
+				var result = HTTP.call('GET',sprite);
+			} catch(err) {
+				if (err.stack.indexOf('Error: failed [404]') >= 0) {
+					return null;
+				}
+			}
+			return sprite;
+		}
+		return null;
 	}
 
 });
-
+/**
+ * Determines if the pokemon is a mega pokemon.
+ *
+ * @method isMega | isMegaX | isMegaY
+ * @param pokemon {Object} The pokemon object.
+ * @return {Boolean} Returns true if the pokemon is mega, otherwise false
+ */
+function isMega(pokemon) {
+	return pokemon && pokemon.name && pokemon.name.indexOf("-mega") > 0;
+}
+function isMegaX(pokemon) {
+	return pokemon && pokemon.name && pokemon.name.indexOf("-mega-x") > 0;
+}
+function isMegaY(pokemon) {
+	return pokemon && pokemon.name && pokemon.name.indexOf("-mega-y") > 0;
+}
 /**
  * Helper function to extract the pokemon id from the resource uri. 
  *
@@ -58,4 +128,23 @@ Meteor.methods({
  */
 function getIdFromUri(uri) {
 	return parseInt(uri.match(/api\/v.\/pokemon\/(\d+)/)[1]);
+}
+
+/**
+ * Buffer number with zeroes.
+ * 
+ * @method bufferWithZeroes
+ * @param number {Number} The number that we want to buffer.
+ * @param digits {Number} The number of digits
+ * @return {String} The result buffered number as a string.
+ */
+function bufferWithZeroes(number, digits) {
+	var strnum = number+"";
+	var length = strnum.length;
+
+	for (var i=0; i<digits-length; i++) {
+		strnum = "0" + strnum;
+	}
+
+	return strnum;
 }

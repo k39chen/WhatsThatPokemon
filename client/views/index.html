@@ -10,14 +10,17 @@
 			{{> puzzle}}
 			{{> choices}}
 		</div>
+		<button>Next</button>
 	</div>
 </body>
 
 <!-- POKEMON PICTURE -->
 <template name="puzzle">
-	<div id="pokemon-puzzle" style="width:{{width}}px;height:{{height}}px;">
-		<img class="image" src="{{image}}" width="{{width}}" height="{{height}}" />
-		<img class="mask" src="{{image}}" width="{{width}}" height="{{height}}" />
+	<div id="pokemon-puzzle">
+		{{#with puzzle}}
+		<img class="image" src="{{src}}" width="{{width}}px" height="{{height}}px" style="top:{{top}}px;left:{{left}}px"/>
+		<img class="mask" src="{{src}}" width="{{width}}px" height="{{height}}px" style="top:{{top}}px;left:{{left}}px"/>
+		{{/with}}
 	</div>
 </template>
 
@@ -32,5 +35,5 @@
 
 <!-- POKEMON CHOICE -->
 <template name="choice">
-	<div class="pokemon-choice">{{name}}</div>
+	<div class="pokemon-choice">{{pokemon.name}}</div>
 </template>
