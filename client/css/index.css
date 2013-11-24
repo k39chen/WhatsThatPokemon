@@ -47,17 +47,13 @@ body {
 }
 
 #pokemon-puzzle {
-	width: 256px;
-	height: 256px;
 	position: relative;
 }
 #pokemon-puzzle .image, #pokemon-puzzle .mask {
-	width: 256px;
-	height: 256px;
 	position: absolute;
 	top: 0px;
 	left: 0px;
 }
 #pokemon-puzzle .mask {
-	filter: brightness(0%);
+	/*-webkit-filter: brightness(0%);*/
 }

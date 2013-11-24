@@ -39,41 +39,12 @@ Meteor.methods({
 				if (!Pokemon.findOne({id: getIdFromUri(pokemon.resource_uri)})){
 					Pokemon.insert({
 						id: getIdFromUri(pokemon.resource_uri),
-						name: getNormalizedName(pokemon.name)
+						name: pokemon.name
 					});
 				}
 				console.log(pokemon);
 			}
 		}
-	},
-
-	/**
-	 * Get the pokemon sprite
-	 *
-	 * @method getPokemonSprite
-	 * @param pokemon {Object} The pokemon data object.
-	 */
-	getPokemonSprite: function(pokemon) {
-		var id = bufferWithZeroes(pokemon.id,3);
-		var name = pokemon.name;
-
-		var url = "http://bulbapedia.bulbagarden.net/wiki/File:"+id+name+".png";
-
-		var data = HTTP.call("GET",url);
-		var content = data.content;
-
-		console.log(url);
-
-		var matches = [];
-		content.replace(/[^<]*<a href="([^"]+\.png)">([^<]+)<\/a>/g, function () {
-			var match = Array.prototype.slice.call(arguments, 1, 2);
-			matches.push(match[0]);
-		});
-
-		if (matches.length > 0) {
-			return matches[0];
-		}
-		return null; 
 	}
 
 });
@@ -87,37 +58,4 @@ Meteor.methods({
  */
 function getIdFromUri(uri) {
 	return parseInt(uri.match(/api\/v.\/pokemon\/(\d+)/)[1]);
-}
-
-/**
- * Helper function to normalize the pokemon name
- *
- * @method getNormalizedName
- * @param name {String} The input name
- * @return {String} The resultant normalized pokemon name
- */
-function getNormalizedName(name){
-	var res = name;
-	res = res.replace(/-m/g,"-M");
-	res = res.capitalize();
-	return res;
-}
-
-/**
- * Buffer number with zeroes.
- * 
- * @method bufferWithZeroes
- * @param number {Number} The number that we want to buffer.
- * @param digits {Number} The number of digits
- * @return {String} The result buffered number as a string.
- */
-function bufferWithZeroes(number, digits) {
-	var strnum = number+"";
-	var length = strnum.length;
-
-	for (var i=0; i<digits-length; i++) {
-		strnum = "0" + strnum;
-	}
-
-	return strnum;
 }
