@@ -37,7 +37,24 @@ function createQuiz() {
 		// generate the choices
 		var choices = [];
 		for (var choice in quiz) {
-			choices.push(quiz[choice]);
+			var result = quiz[choice];
+			var name = result.pokemon.name.capitalize();
+			if (isMega(result.pokemon)) {
+				var split = name.split("-");
+				name = "Mega " + split[0];
+				if (isMegaX(result.pokemon)) name += " X";
+				if (isMegaY(result.pokemon)) name += " Y";
+			}
+			if (name.indexOf("-") >= 0) {
+				var split = name.split("-");
+				if (name != "Ho-oh" && name != "Porygon-z") {
+					name = split[0] + " (" + split[1].capitalize() + ")";
+				} else {
+					name = split[0] + "-" + split[1].capitalize();
+				}
+			}
+			result.pokemon.name = name;
+			choices.push(result);
 		}
 
 		// decide which of the choices will be the puzzle
@@ -165,25 +182,14 @@ function isMegaY(pokemon) {
 /**
  * Render behaviour for puzzle
  */
- Template.puzzle.puzzle = function() { 
- 	
- 	console.log(Session.get("puzzle"));
-
+ Template.puzzle.puzzle = function() {
  	return Session.get("puzzle"); 
-
  };
- /*
- Template.puzzle.image = function(){ return Session.get("puzzleImage"); };
- Template.puzzle.width = function(){ return Session.get("puzzleWidth"); };
- Template.puzzle.height = function(){ return Session.get("puzzleHeight"); };
- Template.puzzle.left = function(){ return Session.get("puzzleLeft"); };
- Template.puzzle.top = function(){ return Session.get("puzzleTop"); };
-*/
+
 /**
  * Render behaviour for choices
  */
 Template.choices.choices = function(){
-	console.log(Session.get("choices"));
 	return Session.get("choices");
 };
 Template.choice.events = {

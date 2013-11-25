@@ -62,9 +62,12 @@ Meteor.methods({
 		var sprite = null;
 
 		if (pokemon && pokemon.id) {
-			if (isMega(pokemon)) {
 
-				// need to find the RIGHT id... by the pokemon name
+			// discard pokemon with id>10000 that are not mega.
+			if (pokemon.id > 10000 && !isMega(pokemon)) return null;
+
+			// build mega url
+			if (isMega(pokemon)) {
 				var name = pokemon.name
 					.replace("-mega-x","")
 					.replace("-mega-y","")
