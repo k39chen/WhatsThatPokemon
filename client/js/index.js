@@ -1,6 +1,7 @@
 var quiz = {};
 var quizLength = 0;
 var puzzle = null;
+var locked = false;
 
 // initialize the pokedex for the client
 var pokedex = null;
@@ -200,7 +201,14 @@ function chooseOption(choice) {
 function correct() {
 	console.log("Correct!");
 
-	createQuiz();
+	lockChoices();
+
+	$(".pokemon-choice")
+		.css({opacity:1.0})
+		.stop()
+		.animate({opacity:0.6},400,function(){
+			revealPokemon();
+		});
 }
 
 /**
@@ -212,7 +220,46 @@ function correct() {
 function incorrect(selected) {
 	console.log("Incorrect!");
 
-	createQuiz();
+	lockChoices();
+
+	$(".pokemon-choice")
+		.css({opacity:1.0})
+		.stop()
+		.animate({opacity:0.6},400,function(){
+			revealPokemon();
+		});
+}
+
+/**
+ * Disable interaction with choices once it has been locked.
+ *
+ * @method lockChoices
+ */
+function lockChoices() {
+	locked = true;
+	$(".pokemon-choice").removeClass("hover","active").addClass("locked");
+}
+
+/**
+ * Perform some flashy reveal for the pokemon.
+ *
+ * @method revealPokemon
+ */
+function revealPokemon() {
+	$("#pokemon-puzzle .mask").stop().animate(
+		{"brightness": 100},
+		{
+			duration: 1000, 
+			step: function(now, fx){
+				$(this).css("WebkitFilter", "brightness("+now+"%)");
+			},
+			complete: function(){
+				this.brightness = 0;
+
+				// we will now reveal the NEXT BUTTON
+			}
+		}
+	);
 }
 
 /**
@@ -248,21 +295,28 @@ Template.choices.choices = function(){
 Template.choice.events = {
 	"mouseover": function(e){
 		var $this = $(e.target);
-		$this.addClass("hover");
+		if (!locked) {
+			$this.addClass("hover");
+		}
 	},
 	"mouseout": function(e){
 		var $this = $(e.target);
-		$this.removeClass("hover");
-		$this.removeClass("active");
+		if (!locked) {
+			$this.removeClass("hover");
+			$this.removeClass("active");
+		}
 	},
 	"mousedown": function(e){
 		var $this = $(e.target);
-		$this.addClass("active");
+		if (!locked) {
+			$this.addClass("active");
+		}
 	},
 	"mouseup": function(e){
 		var $this = $(e.target);
-		$this.removeClass("active");
-
-		chooseOption($this);
+		if (!locked) {
+			$this.removeClass("active");
+			chooseOption($this);
+		}
 	}
 };
