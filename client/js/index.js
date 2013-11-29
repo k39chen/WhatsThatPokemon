@@ -1,5 +1,6 @@
 var quiz = {};
 var quizLength = 0;
+var puzzle = null;
 
 // initialize the pokedex for the client
 var pokedex = null;
@@ -58,7 +59,7 @@ function createQuiz() {
 		}
 
 		// decide which of the choices will be the puzzle
-		var puzzle = choices[Math.floor(Math.random()*choices.length)];
+		puzzle = choices[Math.floor(Math.random()*choices.length)];
 
 		// update the session variables
 		Session.set("puzzle",puzzle.sprite);
@@ -138,8 +139,19 @@ function getPokemonSprite(pokemon, cb) {
 				var canvasWidth = 400, 
 					canvasHeight = 400,
 					width = e.target.naturalWidth * 2, 
-					height = e.target.naturalHeight * 2,
-					left = (canvasWidth - width) / 2, 
+					height = e.target.naturalHeight * 2;
+
+				if (width > canvasWidth || height > canvasHeight) {
+					if (width > height) {
+						height *= (canvasWidth / width);
+						width = canvasWidth;
+					} else {
+						width *= (canvasHeight / height);
+						height = canvasHeight;
+					}
+				}
+
+				var left = (canvasWidth - width) / 2, 
 					top = (canvasHeight - height) / 2;
 
 				if (cb) {
@@ -160,6 +172,47 @@ function getPokemonSprite(pokemon, cb) {
 			cb(null);
 		}
 	});
+}
+
+/**
+ * Chooses an option.
+ *
+ * @method chooseOption
+ * @param choice {Object} The DOM element for the button choice
+ */
+function chooseOption(choice) {
+
+	var selected = choice.attr("ident");
+	var solution = puzzle.pokemon.id;
+
+	if (selected == solution) {
+		correct();
+	} else {
+		incorrect(selected);
+	}
+}
+
+/**
+ * Performs actions for providing a correct answer.
+ *
+ * @method correct
+ */
+function correct() {
+	console.log("Correct!");
+
+	createQuiz();
+}
+
+/**
+ * Performs actions for providing an incorrect answer.
+ *
+ * @method incorrect
+ * @param selected {Number} The id of the selected pokemon.
+ */
+function incorrect(selected) {
+	console.log("Incorrect!");
+
+	createQuiz();
 }
 
 /**
@@ -210,7 +263,6 @@ Template.choice.events = {
 		var $this = $(e.target);
 		$this.removeClass("active");
 
-		// choose this option! :D
-		// ...
+		chooseOption($this);
 	}
 };
