@@ -2,7 +2,7 @@
 Meteor.startup(function(){
 
 	// initialize the pokedex at startup
-	var getFromAPI = true;
+	var getFromAPI = false;
 	if (getFromAPI) {
 		Meteor.call("getPokedex", getFromAPI, function(err,res){
 			if (getFromAPI){
