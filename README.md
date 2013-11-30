@@ -1,14 +1,16 @@
 What's That Pokemon
 ===============
 
-Match the silhouette of the Pokemon to one of the given Pokemon names. [Try it now](http://htmlpreview.github.io/?https://github.com/k39chen/ColorGame/blob/master/index.html)!
+Match the silhouette of the Pokemon to one of the given Pokemon names. [Try it now](http://whatsthatpokemon.meteor.com/)!
 
+<center>
 ![alt='promo.jpg'](promo.jpg)
+</center>
 
 Usage
 ------------
 
-To play **What's That Pokemon** [click here](http://htmlpreview.github.io/?https://github.com/k39chen/AnimeRecord/blob/master/index.html).
+To play **What's That Pokemon** [click here](http://whatsthatpokemon.meteor.com/).
 
 Credits
 -------------
