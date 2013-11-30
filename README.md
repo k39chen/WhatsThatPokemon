@@ -1,32 +1,21 @@
 What's That Pokemon
 ===============
 
-A simple Pokemon matching game
+Match the silhouette of the Pokemon to one of the given Pokemon names. [Try it now](http://htmlpreview.github.io/?https://github.com/k39chen/ColorGame/blob/master/index.html)!
 
-Project Organization
------------------------
+![alt='promo.jpg'](promo.jpg)
 
-Where should I put my files?
-The example apps in meteor are very simple, and don’t provide much insight. Here’s my current thinking on the best way to do it: (any suggestions/improvements are very welcome!)
+Usage
+------------
 
-lib/                    # <- any common code for client/server. 
-lib/environment.js      # <- general configuration
-lib/methods.js          # <- Meteor.method definitions
-lib/external            # <- common code from someone else
-## Note that js files in lib folders are loaded before other js files.
+To play **What's That Pokemon** [click here](http://htmlpreview.github.io/?https://github.com/k39chen/AnimeRecord/blob/master/index.html).
 
-collections/                 # <- definitions of collections and methods on them (could be models/)
+Credits
+-------------
+Special thanks goes to Paul Hallett, developer of [http://pokeapi.co/](http://pokeapi.co/) whose API was used extensively throughout the course of this project.
 
-client/lib              # <- client specific libraries (also loaded first)
-client/lib/environment.js   # <- configuration of any client side packages
-client/lib/helpers      # <- any helpers (handlebars or otherwise) that are used often in view files
+Special thanks goes to the Meteor team. Enjoyed the use of the [Meteor JS Framework](http://www.meteor.com/).
 
-client/main.js   # <- subscriptions, basic Meteor.startup code.
-client/index.html       # <- toplevel html
-client/index.js         # <- and its JS
-client/views/<page>.html  # <- the templates specific to a single page
-client/views/<page>.js    # <- and the JS to hook it up
-client/views/<type>/    # <- if you find you have a lot of views of the same object type
-
-server/publications.js  # <- Meteor.publish definitions
-server/lib/environment.js   # <- configuration of server side packages
+License
+-------------
+Copyright (c) 2013 Kevin Chen.
