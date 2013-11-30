@@ -367,12 +367,17 @@ function hidePlayAgainButton(animDuration) {
  */
 function updateHud() {
 
+	var rightChanged = false,
+		wrongChanged = false;
+
 	if (numRight != $("#hud-text-correct span").html()) {
+		rightChanged = true;
 		$("#hud-text-correct span").css({opacity:1}).stop().animate({opacity:0},200,function(){
 			$(this).html(numRight).css({opacity:0}).stop().animate({opacity:1},200);
 		});
 	}
 	if (numWrong != $("#hud-text-incorrect span").html()) {
+		wrongChanged = true;
 		$("#hud-text-incorrect span").css({opacity:1}).stop().animate({opacity:0},200,function(){
 			$(this).html(numWrong).css({opacity:0}).stop().animate({opacity:1},200);
 		});
@@ -380,25 +385,44 @@ function updateHud() {
 
 	var total = numRight + numWrong;
 
-	if (total == 0) return;
+	if (total == 0 || (!rightChanged && !wrongChanged)) return;
 
-	var correctBarWidth = numRight / total * 100;
+	var correctBarWidth = numRight / total * 100,
+		incorrectBarWidth = 100 - correctBarWidth;
 
-	$("#hud-hidden").animate({myWidth: correctBarWidth}, {
-		duration: 400,
-		start: function(){
-			this.myWidth = $("#hud-correct").width();
-		},
-		step: function(now,fx){
-			$("#hud-correct").width(now + "%");
-			if (numWrong > 0) {
-				$("#hud-incorrect").width((100-now)+"%");
+	if (correctBarWidth > 0) {
+		$("#hud-hidden").animate({myWidth: correctBarWidth}, {
+			duration: 400,
+			start: function(){
+				this.myWidth = $("#hud-correct").width();
+			},
+			step: function(now,fx){
+				$("#hud-correct").width(now + "%");
+				if (numWrong > 0) {
+					$("#hud-incorrect").width((100-now)+"%");
+				}
+			},
+			complete: function(){
+				this.myWidth = correctBarWidth;
 			}
-		},
-		complete: function(){
-			this.myWidth = correctBarWidth;
-		}
-	});
+		});
+	} else {
+		$("#hud-hidden").animate({myWidth: incorrectBarWidth}, {
+			duration: 400,
+			start: function(){
+				this.myWidth = $("#hud-incorrect").width();
+			},
+			step: function(now,fx){
+				if (numRight > 0) {
+					$("#hud-correct").width((100-now) + "%");
+				}
+				$("#hud-incorrect").width(now+"%");
+			},
+			complete: function(){
+				this.myWidth = incorrectBarWidth;
+			}
+		});
+	}
 }
 
 /**

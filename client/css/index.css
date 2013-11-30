@@ -2,6 +2,8 @@ body {
 	font-family: "HelveticaNeueLt", "Helvetica Neue", Helvetica, Arial;
 	font-weight: 100;
 	font-size: 32px;
+
+	overflow-x: hidden;
 }
 #container {
 	width: 100%;
@@ -121,7 +123,7 @@ body {
 
 #play-again {
 	cursor: pointer;
-	margin: 16px auto 0px auto;
+	margin: 16px auto 48px auto;
 	text-align: center;
 	padding: 16px;
 	height: 32px;
@@ -144,7 +146,7 @@ body {
 }
 
 #hud {
-	position: absolute;
+	position: fixed;
 	left: 0px;
 	bottom: 0px;
 
