@@ -366,15 +366,39 @@ function hidePlayAgainButton(animDuration) {
  * @method updateHud
  */
 function updateHud() {
-	$("#hud-text-correct span").html(numRight);
-	$("#hud-text-incorrect span").html(numWrong);
+
+	if (numRight != $("#hud-text-correct span").html()) {
+		$("#hud-text-correct span").css({opacity:1}).stop().animate({opacity:0},200,function(){
+			$(this).html(numRight).css({opacity:0}).stop().animate({opacity:1},200);
+		});
+	}
+	if (numWrong != $("#hud-text-incorrect span").html()) {
+		$("#hud-text-incorrect span").css({opacity:1}).stop().animate({opacity:0},200,function(){
+			$(this).html(numWrong).css({opacity:0}).stop().animate({opacity:1},200);
+		});
+	}
 
 	var total = numRight + numWrong;
-	var correctBarWidth = numRight / total * 100;
-	var incorrectBarWidth = 100 - correctBarWidth;
 
-	$("#hud-correct").width(correctBarWidth + "%");
-	$("#hud-incorrect").width(incorrectBarWidth + "%");
+	if (total == 0) return;
+
+	var correctBarWidth = numRight / total * 100;
+
+	$("#hud-hidden").animate({myWidth: correctBarWidth}, {
+		duration: 400,
+		start: function(){
+			this.myWidth = $("#hud-correct").width();
+		},
+		step: function(now,fx){
+			$("#hud-correct").width(now + "%");
+			if (numWrong > 0) {
+				$("#hud-incorrect").width((100-now)+"%");
+			}
+		},
+		complete: function(){
+			this.myWidth = correctBarWidth;
+		}
+	});
 }
 
 /**
