@@ -3,6 +3,9 @@ var quizLength = 0;
 var puzzle = null;
 var locked = false;
 
+var numRight = 0;
+var numWrong = 0;
+
 // initialize the pokedex for the client
 var pokedex = null;
 Meteor.call("getPokedex", function(err,data){
@@ -20,12 +23,34 @@ Meteor.call("getPokedex", function(err,data){
  * @method initGame
  */
 function initGame() {
+	// hide the result banner
+	hideResult(0);
 
-	$("button").click(function(e){
-		createQuiz();
-	});
-
+	// create the first quiz :)
 	createQuiz();
+
+	// initialize the play again button
+	initPlayAgainButton();
+}
+
+function initPlayAgainButton() {
+	$("#play-again")
+		.mouseover(function(){ $(this).addClass("hover"); })
+		.mouseout(function(){ $(this).removeClass("hover").removeClass("active"); })
+		.mousedown(function(){ $(this).addClass("active"); })
+		.mouseup(function(){ 
+			// hide this button
+			hidePlayAgainButton();
+
+			$(this).removeClass("active");
+			hideResult(400);
+
+			// play again :D
+			createQuiz();
+		});
+
+	// initially we will hide the play again button
+	hidePlayAgainButton();
 }
 
 /**
@@ -34,6 +59,10 @@ function initGame() {
  * @method createQuiz
  */
 function createQuiz() {
+	locked = false;
+
+	// lets update the hud every time we create a new quiz
+	updateHud();
 
 	generateQuiz(4, function(q){
 		// generate the choices
@@ -49,15 +78,19 @@ function createQuiz() {
 			}
 			if (name.indexOf("-") >= 0) {
 				var split = name.split("-");
-				if (name != "Ho-oh" && name != "Porygon-z") {
-					name = split[0] + " (" + split[1].capitalize() + ")";
-				} else {
-					name = split[0] + "-" + split[1].capitalize();
+
+				switch (name) {
+					case "Ho-oh": name = "Ho-Oh"; break;
+					case "Porygon-z": name = "Porygon Z"; break;
+					case "Mr-mime": name = "Mr. Mime"; break;
+					default: name = split[0] + " (" + split[1].capitalize() + ")"; break;
 				}
 			}
 			result.pokemon.name = name;
 			choices.push(result);
 		}
+		// last stand... only allow 4 choices to populate
+		choices = choices.slice(0,4);
 
 		// decide which of the choices will be the puzzle
 		puzzle = choices[Math.floor(Math.random()*choices.length)];
@@ -137,8 +170,8 @@ function getPokemonSprite(pokemon, cb) {
 			var img = $("<img>").attr("src",sprite);
 			img.load(function(e){
 
-				var canvasWidth = 400, 
-					canvasHeight = 400,
+				var canvasWidth = 360, 
+					canvasHeight = 360,
 					width = e.target.naturalWidth * 2, 
 					height = e.target.naturalHeight * 2;
 
@@ -199,16 +232,15 @@ function chooseOption(choice) {
  * @method correct
  */
 function correct() {
-	console.log("Correct!");
-
 	lockChoices();
+	revealPokemon();
+	showResult({correct: true, name: puzzle.pokemon.name});
 
-	$(".pokemon-choice")
-		.css({opacity:1.0})
-		.stop()
-		.animate({opacity:0.6},400,function(){
-			revealPokemon();
-		});
+	numRight++;
+	updateHud();
+
+	$(".pokemon-choice[ident='"+puzzle.pokemon.id+"']").addClass("correct");
+	$(".pokemon-choice").css({opacity:1.0}).stop().animate({opacity:0.6},400);
 }
 
 /**
@@ -218,16 +250,16 @@ function correct() {
  * @param selected {Number} The id of the selected pokemon.
  */
 function incorrect(selected) {
-	console.log("Incorrect!");
-
 	lockChoices();
+	revealPokemon();
+	showResult({correct: false, name: puzzle.pokemon.name});
 
-	$(".pokemon-choice")
-		.css({opacity:1.0})
-		.stop()
-		.animate({opacity:0.6},400,function(){
-			revealPokemon();
-		});
+	numWrong++;
+	updateHud();
+
+	$(".pokemon-choice[ident='"+puzzle.pokemon.id+"']").addClass("correct");
+	$(".pokemon-choice[ident='"+selected+"']").addClass("incorrect");
+	$(".pokemon-choice").css({opacity:1.0}).stop().animate({opacity:0.6},400);
 }
 
 /**
@@ -249,17 +281,100 @@ function revealPokemon() {
 	$("#pokemon-puzzle .mask").stop().animate(
 		{"brightness": 100},
 		{
-			duration: 1000, 
+			duration: 400,
+			start: function() {
+				this.brightness = 0;
+			},
 			step: function(now, fx){
 				$(this).css("WebkitFilter", "brightness("+now+"%)");
 			},
 			complete: function(){
 				this.brightness = 0;
-
-				// we will now reveal the NEXT BUTTON
 			}
 		}
 	);
+}
+
+/**
+ * Show the result banner
+ *
+ * @method showResult
+ * @param result {Object} A result object.
+ */
+function showResult(result) {
+	if (result.correct) {
+		$("#result-container").addClass("correct");
+		$("#result-name").html(result.name);
+	} else {
+		$("#result-container").addClass("incorrect");
+		$("#result-name").html(result.name);
+	}
+
+	$("#result-container")
+		.css({height: 0, padding: 0})
+		.stop()
+		.animate({height: 32, padding: 16}, 400,function(){
+			showPlayAgainButton();
+		});
+}
+
+/**
+ * Hide the result banner.
+ *
+ * @method hideResult
+ * @param animDuration {Number} Optional parameter.
+ */
+function hideResult(animDuration) {
+	var duration = animDuration ? animDuration : 0;
+	$("#result-container")
+		.removeClass("correct")
+		.removeClass("incorrect");
+
+	if ($("#result-container").css("height") != 0) {
+		$("#result-container")
+			.css({height: 32, padding: 16})
+			.stop()
+			.animate({height: 0, padding: 0}, duration);
+	}
+}
+
+/**
+ * Shows the play again button
+ * 
+ * @method showPlayAgainButton
+ */
+function showPlayAgainButton() {
+	$("#play-again").show().css({opacity:0}).stop().animate({opacity:1},400);
+}
+
+/**
+ * Hides the play again button
+ *
+ * @method hidePlayAgainButton
+ * @param animDuration {Number} Optional parameter.
+ */
+function hidePlayAgainButton(animDuration) {
+	var duration = animDuration ? animDuration : 0;
+	$("#play-again").css({opacity:1}).stop().animate({opacity:0},duration,function(){
+		$(this).hide();
+	});
+}
+
+/**
+ * Update the HUD.
+ *
+ * @method updateHud
+ */
+function updateHud() {
+	$("#hud-text-correct span").html(numRight);
+	$("#hud-text-incorrect span").html(numWrong);
+
+	var total = numRight + numWrong;
+	var correctBarWidth = numRight / total * 100;
+	var incorrectBarWidth = 100 - correctBarWidth;
+
+	$("#hud-correct").width(correctBarWidth + "%");
+	$("#hud-incorrect").width(incorrectBarWidth + "%");
 }
 
 /**

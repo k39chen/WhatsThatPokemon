@@ -11,8 +11,30 @@
 		<div id="game">
 			<div class="content">
 				{{> puzzle}}
+			</div>
+
+			<div id="result-container" class="correct">
+				<div class="content">
+					<div id="result">
+						My Name is <span id="result-name"></span>.
+					</div>
+				</div>
+			</div>
+
+			<div class="content">
 				{{> choices}}
-				<button>Next</button>
+			</div>
+
+			<div id="play-again">
+				Play Again!
+			</div>
+
+
+			<div id="hud">
+				<div class="hud-text" id="hud-text-correct"><span>32</span><br>Right</div>
+				<div class="hud-text" id="hud-text-incorrect"><span>12</span><br>Wrong</div>
+				<div id="hud-correct"></div>
+				<div id="hud-incorrect"></div>
 			</div>
 		</div>
 	</div>
