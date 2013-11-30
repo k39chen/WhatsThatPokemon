@@ -7,6 +7,10 @@ Match the silhouette of the Pokemon to one of the given Pokemon names. [Try it n
 ![alt='promo.jpg'](promo.jpg)
 </center>
 
+Notes
+------------
+This project was started and completed solely on the premise of trying out some Meteor JS features. Of great note is that this was never intended to be cross-browser compatible and works solely with Google Chrome.
+
 Usage
 ------------
 
